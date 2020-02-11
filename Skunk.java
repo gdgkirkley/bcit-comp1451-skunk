@@ -19,7 +19,10 @@ public class Skunk extends Game
 	private int[]   		currentRolls;
     private Board           board; 
     private SkunkControls   controls;
+    // add a boolean for game over with an accessor so that GameLibrary can check for it.
 
+    // Add a choice for number of computer opponents
+    // Could we allow the player to name their own player?
     public Skunk(int numberOfDice, Input playerInput)
     {
         super();
@@ -66,6 +69,7 @@ public class Skunk extends Game
         endGame();
     }
     
+    // This should check multiple computer opponents
     private void endGame()
     {
         int playerScore   = 0;
@@ -115,7 +119,7 @@ public class Skunk extends Game
                 if(input.equalsIgnoreCase(SkunkControls.YES))
                 {
                     waiting = false;
-                    // Reset variables
+                    // Reset all variables - including player score, etc.
                     introduction();
                 }
                 else if(input.equalsIgnoreCase(SkunkControls.NO))
@@ -369,6 +373,9 @@ public class Skunk extends Game
         player.setStanding(standing);
     }
 
+    // Move this into the SkunkPlayer class
+    // This will help it be reusable for any number of computer opponents
+    // because then you can just loop through them in the round.
     private void computerChoice()
     {
         RandomGenerator r     = new RandomGenerator(0, 1);
