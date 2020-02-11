@@ -27,8 +27,6 @@ public class Skunk extends Game
 	private int[]   		currentRolls;
     private Board           board; 
     private SkunkControls   controls;
-    private boolean         playing;
-    // add a boolean for game over with an accessor so that GameLibrary can check for it.
 
     // Could we allow the player to name their own player?
     public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput)
@@ -66,7 +64,8 @@ public class Skunk extends Game
 		this.die		  = new RandomGenerator(MIN_DIE_VALUE, MAX_DIE_VALUE);
 		this.currentRound = INITIAL_ROUND_VALUE;
         this.currentRolls = new int[numberOfDice];
-        this.playing      = true;
+        
+        this.setPlaying(true);
     }
 
     public boolean startGame()
@@ -74,7 +73,7 @@ public class Skunk extends Game
         System.out.println("Welcome to SKUNK!!");
 		System.out.println();
 
-        while(this.playing)
+        while(this.isPlaying())
         {
             while(this.currentRound < ROUNDS)
             {
@@ -86,7 +85,7 @@ public class Skunk extends Game
             endGame();
         }
 
-        return this.playing;
+        return this.isPlaying();
     }
     
     private void endGame()
@@ -134,7 +133,8 @@ public class Skunk extends Game
                 else if(input.equalsIgnoreCase(SkunkControls.NO))
                 {
                     waiting      = false;
-                    this.playing = false;
+                    
+                    this.setPlaying(false);
                 }
                 else
                 {

@@ -3,11 +3,21 @@ import java.util.ArrayList;
 public class Game
 {
 	private ArrayList<Player> 	players;
-	private	boolean				playing;
-	
+	private boolean				playing;
+
 	public Game()
 	{
-		this.playing     = true;
+		this.playing = true;
+	}
+
+	public void setPlaying(boolean playing)
+	{
+		this.playing = playing;
+	}
+
+	public boolean isPlaying()
+	{
+		return this.playing;
 	}
 
 	public void addPlayer(Player player)
