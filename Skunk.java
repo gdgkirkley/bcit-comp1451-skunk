@@ -2,17 +2,25 @@ import java.util.ArrayList;
 
 public class Skunk extends Game
 {
-    public static final int 	MIN_DICE 		  = 2;
-	public static final int 	MAX_DICE 		  = 3;
-	public static final int		MIN_DIE_VALUE     = 1;
-	public static final int	    MAX_DIE_VALUE	  = 6;
-	public static final int 	COMPUTER_PLAYERS  = 1;
-	public static final int		SKUNK_ROLL		  = 1;
-    public static final int		ROUNDS			  = 5;
-    public static final double  ONE_SKUNK_ODDS    = 0.167;
-    public static final double  DOUBLE_SKUNK_ODDS = 0.03125;
+    public static final int 	MIN_DICE 		     = 2;
+	public static final int 	MAX_DICE 		     = 3;
+	public static final int		MIN_DIE_VALUE        = 1;
+    public static final int	    MAX_DIE_VALUE	     = 6;
+    public static final int     MIN_COMPUTER_PLAYERS = 1;
+    public static final int     MAX_COMPUTER_PLAYERS = 3;
+	public static final int 	COMPUTER_PLAYERS     = 1;
+	public static final int		SKUNK_ROLL		     = 1;
+    public static final int		ROUNDS			     = 5;
+    public static final int     INITIAL_ROUND_VALUE  = 0;
+    public static final int     INITIAL_SCORE_VALUE  = 0;
+
+    public static final String  PLAYER_DEFAULT_NAME  = "Player";
+
+    public static final double  ONE_SKUNK_ODDS       = 0.167;
+    public static final double  DOUBLE_SKUNK_ODDS    = 0.03125;
 	
-	private	int 			numberOfDice;
+    private	int 			numberOfDice;
+    private int             numberOfComputerPlayers;
 	private	RandomGenerator die;
 	private int				currentRound;
 	private	Input			playerInput;
@@ -21,9 +29,8 @@ public class Skunk extends Game
     private SkunkControls   controls;
     // add a boolean for game over with an accessor so that GameLibrary can check for it.
 
-    // Add a choice for number of computer opponents
     // Could we allow the player to name their own player?
-    public Skunk(int numberOfDice, Input playerInput)
+    public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput)
     {
         super();
 
@@ -31,32 +38,40 @@ public class Skunk extends Game
 		{
 			throw new IllegalArgumentException("Invalid number of dice");
         }
+
+        if((numberOfComputerPlayers < MIN_COMPUTER_PLAYERS) || 
+           (numberOfComputerPlayers > MAX_COMPUTER_PLAYERS))
+		{
+			throw new IllegalArgumentException("Invalid number of computer players");
+        }
+
+        this.numberOfDice            = numberOfDice;
+        this.numberOfComputerPlayers = numberOfComputerPlayers;
+        this.playerInput             = playerInput;
         
         this.setPlayers(new ArrayList<Player>());
 		
-		this.addPlayer(new SkunkPlayer("Player", 0, false));
+		this.addPlayer(new SkunkPlayer(PLAYER_DEFAULT_NAME, INITIAL_SCORE_VALUE, false));
 		
-		for(int i = 0; i < COMPUTER_PLAYERS; i++)
+		for(int i = 0; i < this.numberOfComputerPlayers; i++)
 		{
-			this.addPlayer(new SkunkPlayer("Computer " + i, 0, true));
+            boolean computer = true;
+
+			this.addPlayer(new SkunkPlayer("Computer " + i, INITIAL_SCORE_VALUE, computer));
 		}
-		
-		this.numberOfDice = numberOfDice;
-		this.playerInput  = playerInput;
 		
         board             = createSkunkBoard();
         this.controls     = new SkunkControls();
 		this.die		  = new RandomGenerator(MIN_DIE_VALUE, MAX_DIE_VALUE);
-		this.currentRound = 0;
+		this.currentRound = INITIAL_ROUND_VALUE;
 		this.currentRolls = new int[numberOfDice];
 		
-		this.introduction();
+		this.startGame();
     }
 
-    private void introduction()
+    private void startGame()
 	{
         System.out.println("Welcome to SKUNK!!");
-        controls.listRules(numberOfDice);
 		System.out.println();
 
         while(this.currentRound < ROUNDS)
@@ -72,30 +87,13 @@ public class Skunk extends Game
     // This should check multiple computer opponents
     private void endGame()
     {
-        int playerScore   = 0;
-        int computerScore = 0;
-
-        for(Player player : getPlayers())
-        {
-            if(player.isComputer())
-            {
-                computerScore += player.getScoreValue();
-            }
-            else
-            {
-                playerScore += player.getScoreValue();
-            }
-        }
+        Player winningPlayer = getWinningPlayer();
 
         System.out.println("==================");
 
-        if(playerScore > computerScore)
+        if(winningPlayer.getName().equals(PLAYER_DEFAULT_NAME))
         {
             System.out.println("|   YOU WIN!!!!  |");
-        }
-        else if(playerScore == computerScore)
-        {
-            System.out.println("|   It's a tie!  |");
         }
         else
         {
@@ -120,7 +118,7 @@ public class Skunk extends Game
                 {
                     waiting = false;
                     // Reset all variables - including player score, etc.
-                    introduction();
+                    startGame();
                 }
                 else if(input.equalsIgnoreCase(SkunkControls.NO))
                 {
@@ -133,6 +131,28 @@ public class Skunk extends Game
                 }
             }
         }
+    }
+
+    private Player getWinningPlayer() 
+    {
+        Player winningPlayer = null;
+
+        for(Player player : getPlayers())
+        {
+            if(null == winningPlayer)
+            {
+                winningPlayer = player;
+            }
+            else
+            {
+                if(player.getScoreValue() > winningPlayer.getScoreValue())
+                {
+                    winningPlayer = player;
+                }
+            }
+        }
+
+        return winningPlayer;
     }
 	
 	private void playSkunkRound()
@@ -173,7 +193,6 @@ public class Skunk extends Game
                 roundScore += score;
             }
             
-            // Need to update this so that we only run playerChoice if the player is standing
             updateBoard();
             
             if(playingRound)
@@ -192,6 +211,8 @@ public class Skunk extends Game
 
     private void runChoices()
     {
+        int playerScore = this.getPlayerByName(PLAYER_DEFAULT_NAME).getScoreValue();
+
         for(Player player : getPlayers())
         {
             SkunkPlayer skunkPlayer = (SkunkPlayer)player;
@@ -201,7 +222,7 @@ public class Skunk extends Game
             {
                 if(player.isComputer())
                 {
-                    computerChoice();
+                    skunkPlayer.computerChoice(this.currentRound, playerScore);
                 }
                 else
                 {
@@ -368,79 +389,9 @@ public class Skunk extends Game
     {
         boolean standing = controls.checkPlayerStandChoice(this.playerInput);
 
-        SkunkPlayer player = (SkunkPlayer)this.getPlayerByName("Player");
+        SkunkPlayer player = (SkunkPlayer)this.getPlayerByName(PLAYER_DEFAULT_NAME);
 
         player.setStanding(standing);
-    }
-
-    // Move this into the SkunkPlayer class
-    // This will help it be reusable for any number of computer opponents
-    // because then you can just loop through them in the round.
-    private void computerChoice()
-    {
-        RandomGenerator r     = new RandomGenerator(0, 1);
-
-        double      threshold     = 1;
-        double      decision      = ONE_SKUNK_ODDS + DOUBLE_SKUNK_ODDS;
-        int         computerScore = 0;
-        int         playerScore   = 0;
-        int         pointGap      = 0;
-        String      message       = "";
-        SkunkPlayer computer      = null;
-        
-        for(Player player : getPlayers())
-        {
-            if(player.isComputer())
-            {
-                computerScore = player.getScoreValue();
-                computer      = (SkunkPlayer)player;
-            }
-            else
-            {
-                playerScore = player.getScoreValue();
-            }
-        }
-
-        if(computerScore > playerScore)
-        {
-            if(this.currentRound == ROUNDS)
-            {
-                decision += 1;
-            }
-            else
-            {
-                decision += 0.6;
-            }
-        }
-        else if(computerScore == playerScore)
-        {
-            decision += 0.3;
-        }
-        else
-        {
-            pointGap = playerScore - computerScore;
-
-            decision -= (pointGap / 100);
-        }
-
-        double random =  r.getNewSmallRandom();
-        decision      += random;
-
-        // For debugging:
-        //System.out.println("Computer decision..." + decision + ". Random was " + random);
-
-        if(decision > threshold)
-        {
-            computer.setStanding(false);
-
-            message = "sit";
-        }
-        else
-        {
-            message = "stay standing";
-        }
-
-        System.out.println(computer.getName() + " has chosen to " + message);
     }
 
 	private Board createSkunkBoard()

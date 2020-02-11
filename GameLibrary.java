@@ -5,13 +5,14 @@ public class GameLibrary
 	
 	private Input 	playerInput;
     private boolean choosing;
-    private Game    game;
-	
+
     public GameLibrary()
     {
-        super();
+		super();
+		
         playerInput = new Input();
-        choosing	= true;
+		choosing	= true;
+		
 		introduction();
     }
 	
@@ -34,7 +35,7 @@ public class GameLibrary
 					if(input == SKUNK_ID)
 					{
 						choosing = false;
-						startSkunk();
+						new SkunkConfig().startSkunk(playerInput);
 					}
 					else if(input == TIC_TAC_TOE_ID)
 					{
@@ -48,35 +49,6 @@ public class GameLibrary
 				}
 				
 				System.out.println("Hmm..." + playerInput.getStringInput() + " is not a valid option. Try again!");
-			}
-		}
-	}
-	
-	private void startSkunk()
-	{
-		choosing = true;
-
-		System.out.println("You chose SKUNK!");
-		System.out.println();
-		System.out.print("Choose a number of dice (" + Skunk.MIN_DICE + " or " + Skunk.MAX_DICE + "): ");
-		
-		while(choosing)
-		{
-			if(playerInput.hasNext())
-			{
-				if(playerInput.hasNextInt())
-				{
-					int input = playerInput.getIntInput();
-					
-					if(input == Skunk.MIN_DICE || input == Skunk.MAX_DICE)
-					{
-						game = new Skunk(input, playerInput);
-					}
-					else
-					{
-						System.out.println("Hmmm... choose again: ");
-					}
-				}
 			}
 		}
 	}
