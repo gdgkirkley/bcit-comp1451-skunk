@@ -19,13 +19,14 @@ public class GameLibrary
 	public void introduction()
 	{
 		System.out.println("Welcome to Games World!");
-		System.out.println("What game would you like to play?");
-		System.out.println(SKUNK_ID + ". SKUNK");
-		System.out.println(TIC_TAC_TOE_ID + ". Tic Tac Toe");
-		System.out.print("Enter your choice: ");
 		
 		while(choosing)
 		{		
+			System.out.println("What game would you like to play?");
+			System.out.println(SKUNK_ID + ". SKUNK");
+			System.out.println(TIC_TAC_TOE_ID + ". Tic Tac Toe");
+			System.out.print("Enter your choice: ");
+
 			if(playerInput.hasNext())
 			{
 				if(playerInput.hasNextInt())
@@ -34,12 +35,15 @@ public class GameLibrary
 					
 					if(input == SKUNK_ID)
 					{
-						choosing = false;
-						new SkunkConfig().startSkunk(playerInput);
+						boolean playing = new SkunkConfig().startSkunk(playerInput);
+
+						if(!playing)
+						{
+							continue;
+						}
 					}
 					else if(input == TIC_TAC_TOE_ID)
 					{
-						choosing = false;
 						System.out.println("You chose Tic Tac Toe!");
 					}
 					else

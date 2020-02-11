@@ -9,7 +9,7 @@ public class SkunkConfig
         super();
     }
 
-    public void startSkunk(Input playerInput)
+    public boolean startSkunk(Input playerInput)
 	{
         this.playerInput = playerInput;
 
@@ -19,7 +19,9 @@ public class SkunkConfig
         setUpNumberOfDice();
         setUpNumberOfComputerPlayers();
 
-        new Skunk(this.numberOfDice, this.numberOfComputerPlayers, playerInput);
+		Skunk skunk = new Skunk(this.numberOfDice, this.numberOfComputerPlayers, playerInput);
+		
+		return skunk.startGame();
     }
     
     private void setUpNumberOfDice()

@@ -27,6 +27,7 @@ public class Skunk extends Game
 	private int[]   		currentRolls;
     private Board           board; 
     private SkunkControls   controls;
+    private boolean         playing;
     // add a boolean for game over with an accessor so that GameLibrary can check for it.
 
     // Could we allow the player to name their own player?
@@ -64,27 +65,30 @@ public class Skunk extends Game
         this.controls     = new SkunkControls();
 		this.die		  = new RandomGenerator(MIN_DIE_VALUE, MAX_DIE_VALUE);
 		this.currentRound = INITIAL_ROUND_VALUE;
-		this.currentRolls = new int[numberOfDice];
-		
-		this.startGame();
+        this.currentRolls = new int[numberOfDice];
+        this.playing      = true;
     }
 
-    private void startGame()
+    public boolean startGame()
 	{
         System.out.println("Welcome to SKUNK!!");
 		System.out.println();
 
-        while(this.currentRound < ROUNDS)
+        while(this.playing)
         {
-            this.playSkunkRound();
-
-            this.currentRound += 1;
+            while(this.currentRound < ROUNDS)
+            {
+                this.playSkunkRound();
+    
+                this.currentRound += 1;
+            }
+    
+            endGame();
         }
 
-        endGame();
+        return this.playing;
     }
     
-    // This should check multiple computer opponents
     private void endGame()
     {
         Player winningPlayer = getWinningPlayer();
@@ -117,13 +121,20 @@ public class Skunk extends Game
                 if(input.equalsIgnoreCase(SkunkControls.YES))
                 {
                     waiting = false;
-                    // Reset all variables - including player score, etc.
-                    startGame();
+                    
+                    for(Player player : getPlayers())
+                    {
+                        player.getScore().setScore(INITIAL_SCORE_VALUE);
+                    }
+
+                    this.currentRound = INITIAL_ROUND_VALUE;
+                    this.board        = createSkunkBoard();
+
                 }
                 else if(input.equalsIgnoreCase(SkunkControls.NO))
                 {
-                    waiting = false;
-                    // reset game library
+                    waiting      = false;
+                    this.playing = false;
                 }
                 else
                 {
