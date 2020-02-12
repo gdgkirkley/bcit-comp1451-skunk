@@ -13,6 +13,7 @@ public class Skunk extends Game
     public static final int		ROUNDS			     = 5;
     public static final int     INITIAL_ROUND_VALUE  = 0;
     public static final int     INITIAL_SCORE_VALUE  = 0;
+    public static final int     TRIPLE_SCORE         = 100;
 
     public static final String  PLAYER_DEFAULT_NAME  = "Player";
 
@@ -28,7 +29,7 @@ public class Skunk extends Game
     private Board           board; 
     private SkunkControls   controls;
 
-    // Could we allow the player to name their own player?
+    // Could the player to name their own player?
     public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput)
     {
         super();
@@ -179,8 +180,9 @@ public class Skunk extends Game
         {
             roll();
 
-            int numberOfSkunkRolls  = checkSkunkRolls();
-            int score               = getCurrentRollScore();
+            int     numberOfSkunkRolls  = checkSkunkRolls();
+            int     score               = getCurrentRollScore();
+            boolean triple              = checkTriple();
 
             if(numberOfSkunkRolls > 0)
             {
@@ -188,7 +190,8 @@ public class Skunk extends Game
                 {
                     playingRound = false;
 
-                    if(numberOfSkunkRolls == this.numberOfDice)
+                    if(numberOfSkunkRolls == this.numberOfDice ||
+                       (this.numberOfDice == MAX_DICE && numberOfSkunkRolls == this.numberOfDice - 1))
                     {
                         skunkPlayersGame();
                     }
@@ -200,6 +203,11 @@ public class Skunk extends Game
             }
             else
             {
+                if(triple)
+                {
+                    score = TRIPLE_SCORE;
+                }
+
                 scorePlayers(score);
                 roundScore += score;
             }
@@ -233,7 +241,7 @@ public class Skunk extends Game
             {
                 if(player.isComputer())
                 {
-                    skunkPlayer.computerChoice(this.currentRound, playerScore);
+                    skunkPlayer.computerChoice(this.currentRound, playerScore, this.numberOfDice);
                 }
                 else
                 {
@@ -306,6 +314,22 @@ public class Skunk extends Game
         }
 
         return numberOfSkunkRolls;
+    }
+
+    private boolean checkTriple()
+    {
+        boolean triple = true;
+        int     first  = this.currentRolls[0];
+
+        for(int i = 0; i < this.currentRolls.length; i++)
+        {
+            if(first != this.currentRolls[i])
+            {
+                triple = false;
+            }
+        }
+
+        return triple;
     }
 
     private boolean areAllPlayersStanding()
