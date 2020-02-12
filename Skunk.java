@@ -2,20 +2,18 @@ import java.util.ArrayList;
 
 public class Skunk extends Game
 {
-    public static final int 	MIN_DICE 		     = 2;
-	public static final int 	MAX_DICE 		     = 3;
-	public static final int		MIN_DIE_VALUE        = 1;
-    public static final int	    MAX_DIE_VALUE	     = 6;
-    public static final int     MIN_COMPUTER_PLAYERS = 1;
-    public static final int     MAX_COMPUTER_PLAYERS = 3;
-	public static final int 	COMPUTER_PLAYERS     = 1;
-	public static final int		SKUNK_ROLL		     = 1;
-    public static final int		ROUNDS			     = 5;
-    public static final int     INITIAL_ROUND_VALUE  = 0;
-    public static final int     INITIAL_SCORE_VALUE  = 0;
-    public static final int     TRIPLE_SCORE         = 100;
-
-    public static final String  PLAYER_DEFAULT_NAME  = "Player";
+    public static final int 	MIN_DICE 		       = 2;
+	public static final int 	MAX_DICE 		       = 3;
+	public static final int		MIN_DIE_VALUE          = 1;
+    public static final int	    MAX_DIE_VALUE	       = 6;
+    public static final int     MIN_COMPUTER_PLAYERS   = 1;
+    public static final int     MAX_COMPUTER_PLAYERS   = 3;
+	public static final int 	COMPUTER_PLAYERS       = 1;
+	public static final int		SKUNK_ROLL		       = 1;
+    public static final int		ROUNDS			       = 5;
+    public static final int     INITIAL_ROUND_VALUE    = 0;
+    public static final int     INITIAL_SCORE_VALUE    = 0;
+    public static final int     TRIPLE_SCORE           = 100;
 
     public static final double  ONE_SKUNK_ODDS       = 0.167;
     public static final double  DOUBLE_SKUNK_ODDS    = 0.03125;
@@ -28,9 +26,10 @@ public class Skunk extends Game
 	private int[]   		currentRolls;
     private Board           board; 
     private SkunkControls   controls;
+    private String          playerName;
 
-    // Could the player to name their own player?
-    public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput)
+    // Could the player name their own player?
+    public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput, String playerName)
     {
         super();
 
@@ -48,10 +47,11 @@ public class Skunk extends Game
         this.numberOfDice            = numberOfDice;
         this.numberOfComputerPlayers = numberOfComputerPlayers;
         this.playerInput             = playerInput;
+        this.playerName              = playerName;
         
         this.setPlayers(new ArrayList<Player>());
-		
-		this.addPlayer(new SkunkPlayer(PLAYER_DEFAULT_NAME, INITIAL_SCORE_VALUE, false));
+
+		this.addPlayer(new SkunkPlayer(this.playerName, INITIAL_SCORE_VALUE, false));
 		
 		for(int i = 0; i < this.numberOfComputerPlayers; i++)
 		{
@@ -95,7 +95,7 @@ public class Skunk extends Game
 
         System.out.println("==================");
 
-        if(winningPlayer.getName().equals(PLAYER_DEFAULT_NAME))
+        if(winningPlayer.getName().equals(this.playerName))
         {
             System.out.println("|   YOU WIN!!!!  |");
         }
@@ -230,7 +230,7 @@ public class Skunk extends Game
 
     private void runChoices()
     {
-        int playerScore = this.getPlayerByName(PLAYER_DEFAULT_NAME).getScoreValue();
+        int playerScore = this.getPlayerByName(this.playerName).getScoreValue();
 
         for(Player player : getPlayers())
         {
@@ -424,7 +424,7 @@ public class Skunk extends Game
     {
         boolean standing = controls.checkPlayerStandChoice(this.playerInput);
 
-        SkunkPlayer player = (SkunkPlayer)this.getPlayerByName(PLAYER_DEFAULT_NAME);
+        SkunkPlayer player = (SkunkPlayer)this.getPlayerByName(this.playerName);
 
         player.setStanding(standing);
     }

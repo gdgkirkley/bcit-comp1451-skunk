@@ -1,8 +1,12 @@
 public class SkunkConfig
 {
+	public static final int     PLAYER_NAME_MAX_LENGTH = 12;
+	public static final String  PLAYER_DEFAULT_NAME    = "Player";
+
     private int     numberOfDice;
     private int     numberOfComputerPlayers;
-    private Input   playerInput;
+	private Input   playerInput;
+	private String  playerName;
 
     public SkunkConfig()
     {
@@ -17,9 +21,10 @@ public class SkunkConfig
 		System.out.println();
 		
         setUpNumberOfDice();
-        setUpNumberOfComputerPlayers();
+		setUpNumberOfComputerPlayers();
+		setUpPlayerName();
 
-		Skunk skunk = new Skunk(this.numberOfDice, this.numberOfComputerPlayers, playerInput);
+		Skunk skunk = new Skunk(this.numberOfDice, this.numberOfComputerPlayers, playerInput, this.playerName);
 		
 		return skunk.startGame();
     }
@@ -80,5 +85,36 @@ public class SkunkConfig
 				}
 			}
 		}
-    }
+	}
+	
+	private void setUpPlayerName()
+	{
+		boolean choosing = true;
+
+        while(choosing)
+		{
+			System.out.print("Name? (" + PLAYER_NAME_MAX_LENGTH + " chars max or " + 
+							 "enter " + Controls.USE_DEFAULT + " for default): ");
+
+			if(playerInput.hasNext())
+			{
+				String input = playerInput.getStringInput();
+				
+				if(input.equalsIgnoreCase(Controls.USE_DEFAULT))
+				{
+					this.playerName = PLAYER_DEFAULT_NAME;
+					choosing        = false;
+				}
+				else if(input.length() <= PLAYER_NAME_MAX_LENGTH)
+				{
+					this.playerName = input;
+					choosing        = false;
+				}
+				else
+				{
+					System.out.println("Hmmm..." + input + " is too long.");
+				}	
+			}
+		}
+	}
 }
