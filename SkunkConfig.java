@@ -93,8 +93,9 @@ public class SkunkConfig
 
         while(choosing)
 		{
-			System.out.print("Name? (" + PLAYER_NAME_MAX_LENGTH + " chars max or " + 
-							 "enter " + Controls.USE_DEFAULT + " for default): ");
+			System.out.print("What's your name? (" + 
+							 "Enter " + Controls.USE_DEFAULT + 
+							 " for default name): ");
 
 			if(playerInput.hasNext())
 			{

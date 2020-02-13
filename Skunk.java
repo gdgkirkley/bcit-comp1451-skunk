@@ -203,7 +203,7 @@ public class Skunk extends Game
             }
             else
             {
-                if(triple)
+                if((this.numberOfDice == MAX_DICE) && (triple))
                 {
                     score = TRIPLE_SCORE;
                 }
@@ -212,7 +212,7 @@ public class Skunk extends Game
                 roundScore += score;
             }
             
-            updateBoard();
+            updateBoard(roundScore);
             
             if(playingRound)
             {
@@ -412,7 +412,7 @@ public class Skunk extends Game
             {
                 SkunkPlayer skunkPlayer = (SkunkPlayer)player;
 
-                if(!skunkPlayer.isStanding())
+                if(skunkPlayer.isStanding())
                 {
                     skunkPlayer.getScore().setScore(0);
                 }
@@ -444,7 +444,7 @@ public class Skunk extends Game
         return board;
     }
     
-    private void updateBoard()
+    private void updateBoard(int roundScore)
     {
         String rowString = "";
 
@@ -452,7 +452,7 @@ public class Skunk extends Game
         {  
             Player player = getPlayers().get(i);
 
-            rowString = player.getName() + ": " + player.getScore().getScore();
+            rowString = player.getName() + ": " + player.getScoreValue() + " (+" + roundScore + ")";
 
             board.setPosition(i + 1, this.currentRound, rowString);
         }
