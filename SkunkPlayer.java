@@ -11,12 +11,30 @@ public class SkunkPlayer extends Player
     public static final double  TRIPLE_ODDS            = 0.0278;
 
     private boolean standing;
+    private Score   roundScore;
 
     public SkunkPlayer(String name, int startingScore, boolean computer)
     {
         super(name, startingScore, computer);
 
         standing = true;
+
+        this.roundScore = new Score(0);
+    }
+
+    public void setRoundScore(int score)
+    {
+        this.roundScore.setScore(score);
+    }
+
+    public Score getRoundScore()
+    {
+        return this.roundScore;
+    }
+
+    public int getRoundScoreValue()
+    {
+        return this.roundScore.getScore();
     }
 
     public void setStanding(boolean standing)

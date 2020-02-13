@@ -10,7 +10,7 @@ public class SkunkConfig
 
     public SkunkConfig()
     {
-        super();
+		super();
     }
 
     public boolean startSkunk(Input playerInput)

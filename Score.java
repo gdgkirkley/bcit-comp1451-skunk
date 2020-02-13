@@ -6,7 +6,7 @@ public class Score
     {
         checkScore(startingScore);
 
-        this.score = startingScore;
+        this.score       = startingScore;
     }
 
     public void incrementScore(int scoreToAdd) 
@@ -16,7 +16,8 @@ public class Score
 			throw new IllegalArgumentException("Score " + scoreToAdd + " is invalid for this method.");
 		}
 
-		int newScore = this.score + scoreToAdd;
+        int newScore = this.score + scoreToAdd;
+
 		this.setScore(newScore);
     }
     
@@ -27,9 +28,10 @@ public class Score
 			throw new IllegalArgumentException("Score " + scoreToSubtract + " is invalid for this method.");
 		}
 
-		int newScore = this.score - scoreToSubtract;
+        int newScore = this.score - scoreToSubtract;
+
 		this.setScore(newScore);
-	}
+    }
 
     public int getScore()
     {

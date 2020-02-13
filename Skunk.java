@@ -33,6 +33,11 @@ public class Skunk extends Game
     {
         super();
 
+        if(null == playerInput)
+        {
+            throw new IllegalArgumentException("Input cannot be null");
+        }
+
         if(numberOfDice < MIN_DICE || numberOfDice > MAX_DICE)
 		{
 			throw new IllegalArgumentException("Invalid number of dice");
@@ -213,12 +218,13 @@ public class Skunk extends Game
             }
             
             updateBoard(roundScore);
+            board.drawBoard();
             
             if(playingRound)
             {
                 runChoices();
             }
-
+            
             if(areAllPlayersSitting())
             {
                 playingRound = false;
@@ -234,20 +240,24 @@ public class Skunk extends Game
 
         for(Player player : getPlayers())
         {
-            SkunkPlayer skunkPlayer = (SkunkPlayer)player;
-            boolean standing        = skunkPlayer.isStanding();
-
-            if(standing)
+            if(player instanceof SkunkPlayer)
             {
-                if(player.isComputer())
+                SkunkPlayer skunkPlayer = (SkunkPlayer)player;
+                boolean standing        = skunkPlayer.isStanding();
+
+                if(standing)
                 {
-                    skunkPlayer.computerChoice(this.currentRound, playerScore, this.numberOfDice);
-                }
-                else
-                {
-                    playerChoice();
-                }
+                    if(player.isComputer())
+                    {
+                        skunkPlayer.computerChoice(this.currentRound, playerScore, this.numberOfDice);
+                    }
+                    else
+                    {
+                        playerChoice();
+                    }
+                } 
             }
+            
         }
     }   
 
@@ -260,6 +270,7 @@ public class Skunk extends Game
                 SkunkPlayer skunkPlayer = (SkunkPlayer)player;
 
                 skunkPlayer.setStanding(true);
+                skunkPlayer.setRoundScore(0);
             }
         }
     }
@@ -383,6 +394,7 @@ public class Skunk extends Game
                 if(skunkPlayer.isStanding())
                 {
                     skunkPlayer.getScore().incrementScore(score);
+                    skunkPlayer.getRoundScore().incrementScore(score);;
                 }
             }
         }
@@ -399,6 +411,7 @@ public class Skunk extends Game
                 if(skunkPlayer.isStanding())
                 {
                     skunkPlayer.getScore().decrementScore(roundScore);
+                    skunkPlayer.getRoundScore().decrementScore(roundScore);;
                 }
             }
         }
@@ -415,6 +428,7 @@ public class Skunk extends Game
                 if(skunkPlayer.isStanding())
                 {
                     skunkPlayer.getScore().setScore(0);
+                    skunkPlayer.getRoundScore().setScore(0);
                 }
             }
         }
@@ -446,17 +460,28 @@ public class Skunk extends Game
     
     private void updateBoard(int roundScore)
     {
-        String rowString = "";
+        String rowString    = "";
+        String scoreString  = "";
+        int    index        = 0;
 
-        for(int i = 0; i < getPlayers().size(); i++)
-        {  
-            Player player = getPlayers().get(i);
+        for(Player player : getPlayers())
+        {
+            if(null == player)
+            {
+                throw new NullPointerException("Player cannot be null");
+            }
 
-            rowString = player.getName() + ": " + player.getScoreValue() + " (+" + roundScore + ")";
+            if(player instanceof SkunkPlayer)
+            {
+                SkunkPlayer skunkPlayer = (SkunkPlayer)player;
+                scoreString = "(+" + skunkPlayer.getRoundScoreValue() + ")";
+            }
 
-            board.setPosition(i + 1, this.currentRound, rowString);
+            rowString = player.getName() + ": " + player.getScoreValue() + " " + scoreString;
+
+            board.setPosition(index + 1, this.currentRound, rowString);
+
+            index++;
         }
-
-        board.drawBoard();
     }
 }

@@ -44,7 +44,12 @@ public class GameLibrary
 					}
 					else if(input == TIC_TAC_TOE_ID)
 					{
-						System.out.println("You chose Tic Tac Toe!");
+						boolean playing = new TicTacToe(playerInput).startGame();
+
+						if(!playing)
+						{
+							continue;
+						}
 					}
 					else
 					{
