@@ -11,6 +11,8 @@ public class TicTacToe extends Game
     public static final int COL_INDEX           = 1;
     public static final int ROW_INDEX           = 0;
 
+    public static final String PLAYER_MARK      = "X";
+    public static final String COMPUTER_MARK    = "O";
 
     private Board board;
     private Input playerInput;
@@ -94,7 +96,7 @@ public class TicTacToe extends Game
 
                         if(!checkPosition(choice))
                         {
-                            board.setPosition(choice[ROW_INDEX], choice[COL_INDEX], "X");
+                            board.setPosition(choice[ROW_INDEX], choice[COL_INDEX], PLAYER_MARK);
                             choosing = false;
                         }
                         else
@@ -117,16 +119,19 @@ public class TicTacToe extends Game
 
     private void computerChoice()
     {
-        System.out.println("Da comp");
+        for(int row = 0; row < ROWS; row++)
+        {
+            for(int col = 0; col < COLUMNS; col++)
+            {
+                int[] choice = new int[2];
+                checkPosition(choice);
+            }
+        }
     }
 
     private boolean checkPosition(int[] choice)
     {
-        System.out.println("Choice " + choice[ROW_INDEX] + choice[COL_INDEX]);
-
         String contents = board.getPosition(choice[COL_INDEX], choice[ROW_INDEX]);
-
-        System.out.println(contents);
 
         return (contents.length() > 0);
     }
