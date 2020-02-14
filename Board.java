@@ -1,3 +1,11 @@
+
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * A board class that will draw and store information for a board
+ * given the dimensions provided. The board itself is an two-dimensional
+ * array that stores strings. 
+ */
 public class Board
 {
 	public static final String  COLUMN_DIVIDER = " | ";
@@ -8,6 +16,11 @@ public class Board
     private int rows;
     private String[][] board;
 
+    /**
+     * @param rows    - the number of rows
+     * @param columns - the number of columns
+     * Sets up the board and sets all "cells" to an empty string.
+     */
     public Board(int rows, int columns)
     {
         checkNumberNotNegative(columns);
@@ -21,6 +34,9 @@ public class Board
         setAllEmpty();
     }
 
+    /**
+     * Prints the current state of the board to the console.
+     */
     public void drawBoard()
     {
     	int 	longestRow 	= getLengthOfRows() + (this.columns * COLUMN_DIVIDER.length()) - EXTRA_SPACE;
@@ -29,13 +45,17 @@ public class Board
     	for(int i = 0; i < this.rows; i++)
         {	
         	System.out.println(spacer);
-        	
             drawColumns(i);
         }
     	
     	System.out.println();
     }
 
+    /**
+     * @param rowIndex - which row to draw columns for
+     * Given the row that we are iterating through, this
+     * prints the columns/cells for that row and the contents.
+     */
     private void drawColumns(int rowIndex)
     {
         for(int i = 0; i < this.columns; i++)
@@ -64,13 +84,18 @@ public class Board
         		System.out.print(current + 
         				String.format("%" + difference + "s", "") + 
         				COLUMN_DIVIDER);
-        	}
-
+            }
+            
             checkFinalRow(i);
         }
 
     }
 
+    /**
+     * Is this the final column? If so, print a line.
+     * Extracted in case something else can be done here.
+     * @param i - the row index
+     */
 	private void checkFinalRow(int i) {
 		if(i == this.columns - 1)
 		{
@@ -78,6 +103,10 @@ public class Board
 		}
 	}
     
+    /**
+     * @param columnIndex - the index of the current column
+     * @return the longest String in a given column
+     */
     private int getLongestForColumn(int columnIndex)
     {   	
         if(null == board[0][columnIndex])
@@ -105,6 +134,10 @@ public class Board
     	return longest.length();
     }
     
+    /**
+     * Used to space the rest of the rows to the same length
+     * @return the length of the longest row in the table
+     */
     private int getLengthOfRows()
     {
     	int lengthOfRows = 0;
@@ -134,6 +167,11 @@ public class Board
     	return lengthOfRows;
     }
 
+    /**
+     * @param row    - the row in the table
+     * @param column - the column in the table
+     * @param data   - the data to set at the row and column specified
+     */
     public void setPosition(int row, int column, String data)
     {
         checkBounds(column, row);
@@ -146,6 +184,11 @@ public class Board
         board[row][column] = data;
     }
 
+    /**
+     * @param column - the column of the table
+     * @param row    - the row of the table
+     * @return the value at the position given.
+     */
     public String getPosition(int column, int row)
     {
         checkBounds(column, row);
@@ -153,16 +196,25 @@ public class Board
         return board[row][column];
     }
 
+    /**
+     * @return the number of rows
+     */
     public int getRows()
     {
         return rows;
     }
 
+    /**
+     * @return the number of columns
+     */
     public int getColumns()
     {
         return columns;
     }
 
+    /**
+     * Set all the positions in the table to empty strings.
+     */
     private void setAllEmpty()
     {
         for(int row = 0; row < this.rows; row++)
@@ -174,6 +226,10 @@ public class Board
         }
     }
 
+    /**
+     * @param column - the column in the table
+     * @param row    - the row in the table
+     */
     private void checkBounds(int column, int row)
     {
         if(column < 0 || column > columns)
@@ -187,6 +243,9 @@ public class Board
         }
     }
 
+    /**
+     * @param num - a number
+     */
     private void checkNumberNotNegative(int num)
     {
         if(num < 0)

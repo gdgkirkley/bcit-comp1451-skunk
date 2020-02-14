@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * A game that has a list of players playing the game.
+ */
 public class Game
 {
 	private ArrayList<Player> 	players;

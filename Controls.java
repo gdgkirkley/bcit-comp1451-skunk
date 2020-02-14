@@ -1,3 +1,8 @@
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * Controls for the game library
+ */
 public class Controls 
 {
 	public static final String  DISPLAY_BOARD	 = "B";
