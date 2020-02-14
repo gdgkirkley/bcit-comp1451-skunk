@@ -119,12 +119,25 @@ public class TicTacToe extends Game
 
     private void computerChoice()
     {
+        boolean found = false;
+
         for(int row = 0; row < ROWS; row++)
         {
             for(int col = 0; col < COLUMNS; col++)
             {
                 int[] choice = new int[2];
-                checkPosition(choice);
+                choice[ROW_INDEX] = row;
+                choice[COL_INDEX] = col;
+                if(!checkPosition(choice))
+                {
+                    board.setPosition(choice[ROW_INDEX], choice[COL_INDEX], COMPUTER_MARK);
+                    found = true;
+                    break;
+                }
+            }
+            if(found)
+            {
+                break;
             }
         }
     }
