@@ -95,7 +95,9 @@ public class SkunkPlayer extends Player
 
 		while(waiting)
 		{
-			System.out.print("Would you like to sit? (Y or N) ");
+            System.out.print("Would you like to sit? (" + Controls.YES + 
+                             " / " + Controls.NO + " / " + Controls.DISPLAY_CONTROLS + 
+                             " for controls) ");
 
 			if(playerInput.hasNext())
 			{
