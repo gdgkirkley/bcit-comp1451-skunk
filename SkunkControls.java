@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * @author Gabe Kirkley
  * @version 1.0.0
@@ -9,53 +11,60 @@ public class SkunkControls extends Controls
     {
         super();
 	}
-	
-	/**
-	 * Check whether the player would like to sit or stand
-	 * @param playerInput - the player input object
-	 * @return true if the player would like to remain standing
-	 */
-	public boolean checkPlayerStandChoice(Input playerInput)
+
+	public boolean runOtherControls(String input, Board board, ArrayList<Player> players)
 	{
-		boolean waiting = true;
-		boolean remainStanding = true;
+		boolean foundControl = false;
 
-		while(waiting)
+		if(null == input)
 		{
-			System.out.print("Would you like to sit? ");
-
-			if(playerInput.hasNext())
-			{
-				String input = playerInput.getStringInput();
-
-				if(input.equalsIgnoreCase(YES))
-				{
-					remainStanding = false;
-					waiting		   = false;
-				}
-				else if(input.equalsIgnoreCase(NO))
-				{	
-					waiting = false;
-				}
-				else
-				{
-					// Check main control loop
-					System.out.println("Hmmm... " + input + " doesn't work here. Try again!");
-				}
-			}
+			System.out.println("Hmmm... input can't be null");
 		}
 
-		return remainStanding;
+		if(input.equalsIgnoreCase(DISPLAY_BOARD))
+		{
+			board.drawBoard();
+			foundControl = true;
+		}
+		else if(input.equalsIgnoreCase(DISPLAY_CONTROLS))
+		{
+			this.listControls();
+			foundControl = true;
+		}
+		else if(input.equalsIgnoreCase(DISPLAY_SCORES))
+		{
+			for(Player player : players)
+			{
+				System.out.println(player.getName() + ": " + player.getScoreValue());
+			}
+
+			foundControl = true;
+		}
+		else if(input.equalsIgnoreCase(DISPLAY_RULES))
+		{
+			this.listRules(2);
+			foundControl = true;
+		}
+		else if(input.equalsIgnoreCase(QUIT))
+		{
+			System.exit(0);
+		}
+
+		return foundControl;
 	}
 
 	/**
 	 * List the controls of Skunk
 	 */
-    public static void listControls()
+    public void listControls()
 	{
-		System.out.println("Display Board: " + SkunkControls.DISPLAY_BOARD);
-		System.out.println("Display Controls: " + SkunkControls.DISPLAY_CONTROLS);
-		System.out.println("Display Scores: " + SkunkControls.DISPLAY_SCORES);
+		System.out.println("Display Board: " + DISPLAY_BOARD);
+		System.out.println("Display Controls: " + DISPLAY_CONTROLS);
+		System.out.println("Display Scores: " + DISPLAY_SCORES);
+		System.out.println("Display Rules: " + DISPLAY_RULES);
+		System.out.println("Answer Yes: " + YES);
+		System.out.println("Answer No: " + NO);
+		System.out.println("Quit: " + QUIT);
 		System.out.println();
     }
 	

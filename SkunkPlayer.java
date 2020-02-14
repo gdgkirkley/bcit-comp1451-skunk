@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * @author Gabe Kirkley
  * @version 1.0.0
@@ -15,8 +17,9 @@ public class SkunkPlayer extends Player
     public static final double  DOUBLE_SKUNK_ODDS      = 0.03125;
     public static final double  TRIPLE_ODDS            = 0.0278;
 
-    private boolean standing;
-    private Score   roundScore;
+    private boolean       standing;
+    private Score         roundScore;
+    private SkunkControls controls;
 
     /**
      * Create a player for the game of SKUNK and set up a new
@@ -32,6 +35,7 @@ public class SkunkPlayer extends Player
         standing = true;
 
         this.roundScore = new Score(0);
+        this.controls   = new SkunkControls();
     }
 
     /**
@@ -78,6 +82,48 @@ public class SkunkPlayer extends Player
     {
         return this.standing;
     }
+
+    /**
+	 * Check whether the player would like to sit or stand
+	 * @param playerInput - the player input object
+	 * @return true if the player would like to remain standing
+	 */
+	public boolean checkPlayerStandChoice(Input playerInput, Board board, ArrayList<Player> players)
+	{
+		boolean waiting = true;
+		boolean remainStanding = true;
+
+		while(waiting)
+		{
+			System.out.print("Would you like to sit? (Y or N) ");
+
+			if(playerInput.hasNext())
+			{
+				String input = playerInput.getStringInput();
+
+				if(input.equalsIgnoreCase(SkunkControls.YES))
+				{
+					remainStanding = false;
+					waiting		   = false;
+				}
+				else if(input.equalsIgnoreCase(SkunkControls.NO))
+				{	
+					waiting = false;
+				}
+				else
+				{
+                    boolean control = this.controls.runOtherControls(input, board, players);
+
+                    if(!control)
+                    {
+                        System.out.println("Hmmm... " + input + " doesn't work here. Try again!");
+                    }
+				}
+			}
+		}
+
+		return remainStanding;
+	}
 
     /**
      * Make a sitting or standing choice for a computer player
