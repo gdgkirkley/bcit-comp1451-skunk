@@ -17,6 +17,8 @@ public class Board
 
         this.columns = columns;
         this.rows    = rows;
+
+        setAllEmpty();
     }
 
     public void drawBoard()
@@ -77,7 +79,12 @@ public class Board
 	}
     
     private int getLongestForColumn(int columnIndex)
-    {   		
+    {   	
+        if(null == board[0][columnIndex])
+        {
+            throw new IllegalArgumentException("Column is null");
+        }
+        
     	String 	longest = board[0][columnIndex];
     	
     	for(int i = 0; i < this.rows; i++)
@@ -154,6 +161,17 @@ public class Board
     public int getColumns()
     {
         return columns;
+    }
+
+    private void setAllEmpty()
+    {
+        for(int row = 0; row < this.rows; row++)
+        {
+            for(int column = 0; column < this.columns; column++)
+            {
+                board[row][column] = "";
+            }
+        }
     }
 
     private void checkBounds(int column, int row)

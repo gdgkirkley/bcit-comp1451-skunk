@@ -6,6 +6,11 @@ public class TicTacToe extends Game
     public static final int INITIAL_ROUND_VALUE = 0;
     public static final int MAX_ROUNDS          = 9;
     public static final int MAX_INPUT_LENGTH    = 2;
+    public static final int COLUMNS             = 4;
+    public static final int ROWS                = 4;
+    public static final int COL_INDEX           = 1;
+    public static final int ROW_INDEX           = 0;
+
 
     private Board board;
     private Input playerInput;
@@ -18,7 +23,7 @@ public class TicTacToe extends Game
             throw new IllegalArgumentException("Input cannot be null");
         }
 
-        board = createTicTacToeBoard();
+        this.board = createTicTacToeBoard();
 
         this.playerInput  = playerInput;
         this.currentRound = INITIAL_ROUND_VALUE;
@@ -52,21 +57,16 @@ public class TicTacToe extends Game
 
     private void playRound()
     {
-        boolean playingRound = true;
+        board.drawBoard();
 
-        while(playingRound)
+        if(true)
         {
-            if(true)
-            {
-                // add logic to check if a win has happened
-                System.out.println("Could be!");
-            }
-
-            playerChoice();
-            computerChoice();
-
-            board.drawBoard();
+            // add logic to check if a win has happened
+            System.out.println("Could be!");
         }
+
+        playerChoice();
+        computerChoice();
     }
 
     private void endGame()
@@ -88,11 +88,28 @@ public class TicTacToe extends Game
 
                 if(input.length() == MAX_INPUT_LENGTH)
                 {
-                    
+                    if(checkValidInput(input))
+                    {
+                        int[] choice = parseInputChoice(input);
+
+                        if(!checkPosition(choice))
+                        {
+                            board.setPosition(choice[ROW_INDEX], choice[COL_INDEX], "X");
+                            choosing = false;
+                        }
+                        else
+                        {
+                            System.out.println("Already chosen...");
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("Hmmm..." + input + " isn't a square.");
+                    }
                 }
                 else
                 {
-                    System.out.println("Hmm..." + input + "doesn't work here.");
+                    System.out.println("Hmm..." + input + " doesn't work here.");
                 }
             }
         }
@@ -100,12 +117,67 @@ public class TicTacToe extends Game
 
     private void computerChoice()
     {
+        System.out.println("Da comp");
+    }
 
+    private boolean checkPosition(int[] choice)
+    {
+        System.out.println("Choice " + choice[ROW_INDEX] + choice[COL_INDEX]);
+
+        String contents = board.getPosition(choice[COL_INDEX], choice[ROW_INDEX]);
+
+        System.out.println(contents);
+
+        return (contents.length() > 0);
+    }
+
+    private boolean checkValidInput(String input)
+    {
+        boolean valid           = true;
+        char    firstCharacter  = input.charAt(0);
+        char    secondCharacter = input.charAt(COL_INDEX);
+
+        if(!Character.isLetter(firstCharacter) &&
+           !Character.isDigit(secondCharacter))
+        {
+            valid = false;
+        }
+
+        if(Character.getNumericValue(secondCharacter) > (COLUMNS - 1))
+        {
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private int[] parseInputChoice(String input)
+    {
+        char firstCharacter  = Character.toUpperCase(input.charAt(ROW_INDEX));
+        char secondCharacter = input.charAt(COL_INDEX);
+        int[] result         = new int[2];
+
+        if(Character.compare(firstCharacter, 'A') == 0)
+        {
+            result[ROW_INDEX] = 1;    
+        }
+        else if(Character.compare(firstCharacter, 'B') == 0)
+        {
+            result[ROW_INDEX] = 2;
+        }
+        else if(Character.compare(firstCharacter, 'C') == 0)
+        {
+            result[ROW_INDEX] = 3;
+        }
+
+        result[COL_INDEX] = Character.getNumericValue(secondCharacter);
+
+        return result;
     }
 
     private Board createTicTacToeBoard()
     {
-        Board board = new Board(4,4);
+        Board board = new Board(ROWS, COLUMNS);
 
         board.setPosition(0, 1, "1");
         board.setPosition(0, 2, "2");
