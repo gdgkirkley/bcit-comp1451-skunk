@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * The game SKUNK
+ */
 public class Skunk extends Game
 {
     public static final int 	MIN_DICE 		       = 2;
@@ -28,7 +33,13 @@ public class Skunk extends Game
     private SkunkControls   controls;
     private String          playerName;
 
-    // Could the player name their own player?
+    /**
+     * Play a new game of SKUNK. Variables are set in the config.
+     * @param numberOfDice              - how many dice to play with
+     * @param numberOfComputerPlayers   - how many computer players will play
+     * @param playerInput               - the player input object
+     * @param playerName                - the name of the playable player
+     */
     public Skunk(int numberOfDice, int numberOfComputerPlayers, Input playerInput, String playerName)
     {
         super();
@@ -74,6 +85,10 @@ public class Skunk extends Game
         this.setPlaying(true);
     }
 
+    /**
+     * Start the game
+     * @return true if the game is being played
+     */
     public boolean startGame()
 	{
         System.out.println("Welcome to SKUNK!!");
@@ -94,6 +109,11 @@ public class Skunk extends Game
         return this.isPlaying();
     }
     
+    /**
+     * End of the game.
+     * Find the winning player, print the end game message,
+     * Ask if the player would like to play again.
+     */
     private void endGame()
     {
         Player winningPlayer = getWinningPlayer();
@@ -150,6 +170,10 @@ public class Skunk extends Game
         }
     }
 
+    /**
+     * Find the player with the highest score
+     * @return the player with the highest score
+     */
     private Player getWinningPlayer() 
     {
         Player winningPlayer = null;
@@ -171,7 +195,10 @@ public class Skunk extends Game
 
         return winningPlayer;
     }
-	
+    
+    /**
+     * Play a round of SKUNK
+     */
 	private void playSkunkRound()
 	{
         int roundScore       = 0;
@@ -234,6 +261,9 @@ public class Skunk extends Game
         resetPlayers();
     }
 
+    /**
+     * Run the player and computer choices within a round
+     */
     private void runChoices()
     {
         int playerScore = this.getPlayerByName(this.playerName).getScoreValue();
@@ -260,21 +290,10 @@ public class Skunk extends Game
             
         }
     }   
-
-    private void resetPlayers()
-    {
-        for(Player player : this.getPlayers())
-        {
-            if(player instanceof SkunkPlayer)
-            {
-                SkunkPlayer skunkPlayer = (SkunkPlayer)player;
-
-                skunkPlayer.setStanding(true);
-                skunkPlayer.setRoundScore(0);
-            }
-        }
-    }
-	
+    
+    /**
+     * Get new rolls for each die in the set of dice
+     */
 	private void roll()
 	{
 		for(int i = 0; i < numberOfDice; i++)
@@ -300,6 +319,10 @@ public class Skunk extends Game
         }
     }
     
+    /**
+     * Get the total value of the current roll
+     * @return the total value of the current roll
+     */
     private int getCurrentRollScore()
     {
         int score = 0;
@@ -311,7 +334,11 @@ public class Skunk extends Game
 
         return score;
     }
-	
+    
+    /**
+     * Check how many skunks (ones) are in the current roll
+     * @return the number of skunks in the current roll
+     */
 	private int checkSkunkRolls()
 	{
         int numberOfSkunkRolls = 0;
@@ -327,6 +354,10 @@ public class Skunk extends Game
         return numberOfSkunkRolls;
     }
 
+    /**
+     * In a three dice game, check if the roll contains a triple
+     * @return true if the roll contains a triple
+     */
     private boolean checkTriple()
     {
         boolean triple = true;
@@ -343,6 +374,10 @@ public class Skunk extends Game
         return triple;
     }
 
+    /**
+     * Convenience method to check if all players are still standing
+     * @return true if all players are still standing
+     */
     private boolean areAllPlayersStanding()
     {
         boolean allStanding = true;
@@ -363,6 +398,10 @@ public class Skunk extends Game
         return allStanding;
     }
 
+    /**
+     * Convenience method to check if all players are sitting
+     * @return true if all players are sitting
+     */
     private boolean areAllPlayersSitting()
     {
         boolean allSitting = true;
@@ -383,6 +422,10 @@ public class Skunk extends Game
         return allSitting;
     }
     
+    /**
+     * Add the score to any standing players
+     * @param score - the score to add to each player
+     */
     private void scorePlayers(int score)
     {
         for(Player player : this.getPlayers())
@@ -400,6 +443,10 @@ public class Skunk extends Game
         }
     }
 
+    /**
+     * Subtract all the points for the round from the standing players
+     * @param roundScore - the total score for the round to subtract
+     */
     private void skunkPlayersRound(int roundScore)
     {
         for(Player player : this.getPlayers())
@@ -417,6 +464,9 @@ public class Skunk extends Game
         }
     }
 
+    /**
+     * Subtract all points from the player for the whole game
+     */
     private void skunkPlayersGame()
     {
         for(Player player : this.getPlayers())
@@ -434,6 +484,26 @@ public class Skunk extends Game
         }
     }
 
+    /**
+     * Reset all players at the end of a round
+     */
+    private void resetPlayers()
+    {
+        for(Player player : this.getPlayers())
+        {
+            if(player instanceof SkunkPlayer)
+            {
+                SkunkPlayer skunkPlayer = (SkunkPlayer)player;
+
+                skunkPlayer.setStanding(true);
+                skunkPlayer.setRoundScore(0);
+            }
+        }
+    }
+
+    /**
+     * Check if the player wants to sit or stand
+     */
     private void playerChoice()
     {
         boolean standing = controls.checkPlayerStandChoice(this.playerInput);
@@ -443,6 +513,10 @@ public class Skunk extends Game
         player.setStanding(standing);
     }
 
+    /**
+     * Create a board for the game
+     * @return a board set up with the SKUNK header
+     */
 	private Board createSkunkBoard()
 	{
         int numberOfRows = getPlayers().size() + 1;
@@ -458,6 +532,10 @@ public class Skunk extends Game
         return board;
     }
     
+    /**
+     * Update the game board with the scores
+     * @param roundScore - the score for the round
+     */
     private void updateBoard(int roundScore)
     {
         String rowString    = "";

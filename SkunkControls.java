@@ -1,3 +1,8 @@
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * Controls for the game of SKUNK
+ */
 public class SkunkControls extends Controls
 {
     public SkunkControls()
@@ -5,12 +10,16 @@ public class SkunkControls extends Controls
         super();
 	}
 	
+	/**
+	 * Check whether the player would like to sit or stand
+	 * @param playerInput - the player input object
+	 * @return true if the player would like to remain standing
+	 */
 	public boolean checkPlayerStandChoice(Input playerInput)
 	{
 		boolean waiting = true;
 		boolean remainStanding = true;
 
-		
 		while(waiting)
 		{
 			System.out.print("Would you like to sit? ");
@@ -39,14 +48,21 @@ public class SkunkControls extends Controls
 		return remainStanding;
 	}
 
-    public void listControls()
+	/**
+	 * List the controls of Skunk
+	 */
+    public static void listControls()
 	{
 		System.out.println("Display Board: " + SkunkControls.DISPLAY_BOARD);
 		System.out.println("Display Controls: " + SkunkControls.DISPLAY_CONTROLS);
 		System.out.println("Display Scores: " + SkunkControls.DISPLAY_SCORES);
 		System.out.println();
     }
-    
+	
+	/**
+	 * List the rules of SKUNK
+	 * @param numberOfDice - the number of dice in the game
+	 */
     public void listRules(int numberOfDice)
 	{
 		System.out.println("There are " + Skunk.ROUNDS + " rounds in the game. One round corresponds with each letter of the word SKUNK.");

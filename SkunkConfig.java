@@ -1,3 +1,8 @@
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * The config for setting up a game of SKUNK
+ */
 public class SkunkConfig
 {
 	public static final int     PLAYER_NAME_MAX_LENGTH = 12;
@@ -13,6 +18,11 @@ public class SkunkConfig
 		super();
     }
 
+	/**
+	 * Start the config for a game of SKUNK
+	 * @param playerInput - the player input object
+	 * @return true if the game is still running
+	 */
     public boolean startSkunk(Input playerInput)
 	{
         this.playerInput = playerInput;
@@ -28,7 +38,10 @@ public class SkunkConfig
 		
 		return skunk.startGame();
     }
-    
+	
+	/**
+	 * Get a number of dice from the player
+	 */
     private void setUpNumberOfDice()
     {
         boolean choosing = true;
@@ -57,6 +70,9 @@ public class SkunkConfig
 		}
     }
 
+	/**
+	 * Get a number of computer players from the player
+	 */
     private void setUpNumberOfComputerPlayers()
     {
         boolean choosing = true;
@@ -87,6 +103,9 @@ public class SkunkConfig
 		}
 	}
 	
+	/**
+	 * Get a name from the player
+	 */
 	private void setUpPlayerName()
 	{
 		boolean choosing = true;

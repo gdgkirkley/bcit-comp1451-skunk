@@ -1,3 +1,8 @@
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * A player for the game of SKUNK
+ */
 public class SkunkPlayer extends Player
 {
     public static final int    POINT_GAP_DIVISOR       = 100;
@@ -13,6 +18,13 @@ public class SkunkPlayer extends Player
     private boolean standing;
     private Score   roundScore;
 
+    /**
+     * Create a player for the game of SKUNK and set up a new
+     * Score to track the player's round score
+     * @param name          - the name or identifier of the player
+     * @param startingScore - the starting score of the player
+     * @param computer      - is the player playable or computer controlled
+     */
     public SkunkPlayer(String name, int startingScore, boolean computer)
     {
         super(name, startingScore, computer);
@@ -22,31 +34,57 @@ public class SkunkPlayer extends Player
         this.roundScore = new Score(0);
     }
 
+    /**
+     * Set the round score value for this player
+     * @param score - the value of the round score for this player
+     */
     public void setRoundScore(int score)
     {
         this.roundScore.setScore(score);
     }
 
+    /**
+     * Get the Score object for the round score
+     * @return the Score object for the round score
+     */
     public Score getRoundScore()
     {
         return this.roundScore;
     }
 
+    /**
+     * Get the value of the round Score object
+     * @return the value of the round Score object
+     */
     public int getRoundScoreValue()
     {
         return this.roundScore.getScore();
     }
 
+    /**
+     * Set whether the player is standing or sitting
+     * @param standing - if the player is standing
+     */
     public void setStanding(boolean standing)
     {
         this.standing = standing;
     }
 
+    /**
+     * Get whether the player is sitting or standing
+     * @return true if the player is standing
+     */
     public boolean isStanding()
     {
         return this.standing;
     }
 
+    /**
+     * Make a sitting or standing choice for a computer player
+     * @param currentRound - the current round of the game
+     * @param playerScore  - the score of the playable player
+     * @param numberOfDice - the number of dice the game is played with
+     */
     public void computerChoice(int currentRound, int playerScore, int numberOfDice)
     {
         RandomGenerator r         = new RandomGenerator(0, 1);

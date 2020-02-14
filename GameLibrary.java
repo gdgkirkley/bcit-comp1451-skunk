@@ -1,3 +1,8 @@
+/**
+ * @author Gabe Kirkley
+ * @version 1.0.0
+ * A game library that registers available games.
+ */
 public class GameLibrary
 {
     public static final int SKUNK_ID 		= 1;
@@ -16,6 +21,9 @@ public class GameLibrary
 		introduction();
     }
 	
+	/**
+	 * Run the introduction to the Game Library to choose a game.
+	 */
 	public void introduction()
 	{
 		System.out.println("Welcome to Games World!");
