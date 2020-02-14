@@ -33,7 +33,7 @@ public class GameLibrary
 			System.out.println("What game would you like to play?");
 			System.out.println(SKUNK_ID + ". SKUNK");
 			System.out.println(TIC_TAC_TOE_ID + ". Tic Tac Toe");
-			System.out.print("Enter your choice: ");
+			System.out.print("Enter your choice: (" + Controls.QUIT + " to quit) ");
 
 			if(playerInput.hasNext())
 			{
@@ -64,8 +64,19 @@ public class GameLibrary
 						System.out.println("Hmm... doesn't seem to be an option. Try again!");
 					}
 				}
-				
-				System.out.println("Hmm..." + playerInput.getStringInput() + " is not a valid option. Try again!");
+				else 
+				{
+					String input = playerInput.getStringInput();
+
+					if(input.equalsIgnoreCase(Controls.QUIT))
+					{
+						System.exit(0);
+					}
+					else
+					{
+						System.out.println("Hmm..." + input + " is not a valid option. Try again!");
+					}
+				}
 			}
 		}
 	}

@@ -4,7 +4,7 @@ public class TicTacToe extends Game
 {
     public static final int INITIAL_SCORE_VALUE = 0;
     public static final int INITIAL_ROUND_VALUE = 0;
-    public static final int MAX_ROUNDS          = 9;
+    public static final int MAX_ROUNDS          = 3;
     public static final int MAX_INPUT_LENGTH    = 2;
     public static final int COLUMNS             = 4;
     public static final int ROWS                = 4;
@@ -44,13 +44,20 @@ public class TicTacToe extends Game
 
         while(this.isPlaying())
         {
-            while(this.currentRound < MAX_ROUNDS)
+            while(this.currentRound <= MAX_ROUNDS)
             {
                 this.playRound();
     
+                if(currentRound >= 5 && this.checkWin())
+                {
+                    System.out.println("Oh a win");
+                    break;
+                }
+
                 this.currentRound += 1;
             }
-    
+
+            this.setPlaying(false);
             endGame();
         }
 
@@ -61,19 +68,313 @@ public class TicTacToe extends Game
     {
         board.drawBoard();
 
-        if(true)
-        {
-            // add logic to check if a win has happened
-            System.out.println("Could be!");
-        }
-
         playerChoice();
         computerChoice();
+
+        System.out.println("End of round " + this.currentRound);
     }
 
     private void endGame()
     {
-        System.out.println("It's over");
+        System.out.println("Game over!");
+        board.drawBoard();
+
+        System.out.println("==================");
+
+        if(didPlayerWin())
+        {
+            System.out.println("|   YOU WIN!!!!  |");
+        }
+        else
+        {
+            System.out.println("|   You lost...  |");
+        }
+
+        System.out.println("==================");
+    }
+
+    private boolean didPlayerWin()
+    {
+        boolean playerWin     = false;
+        boolean columnMatch   = this.checkColumnMatches();
+        boolean rowMatch      = this.checkRowMatches();
+        boolean diagonalMatch = this.checkDiagonalMatches();
+
+        if(columnMatch)
+        {
+            playerWin = this.checkPlayerWinAcross(true);
+            System.out.println("Won from col");
+        }
+        else if(rowMatch)
+        {
+            playerWin = this.checkPlayerWinAcross(false);
+            System.out.println("Won from row");
+        }
+        else if(diagonalMatch)
+        {
+            playerWin = this.checkPlayerWinDiagonal();
+            System.out.println("Won from diagonal");
+        }
+
+        return playerWin;
+    }
+
+    private boolean checkPlayerWinAcross(boolean checkingColumn)
+    {
+        boolean matches = false;
+        
+        for(int i = 1; i < COLUMNS; i++)
+        {
+            for(int j = 1; j < ROWS; j++)
+            {
+                String contents = "";
+
+                if(checkingColumn)
+                {
+                    contents = board.getPosition(i, j);
+                }
+                else
+                {
+                    contents = board.getPosition(j, i);
+                }
+    
+                if(contents.equals(PLAYER_MARK))
+                {
+                    matches = true;
+                }
+                else
+                {
+                    matches = false;
+                }
+            }
+
+            if(matches)
+            {
+                break;
+            }
+        }
+
+        return matches;
+    }
+
+    private boolean checkPlayerWinDiagonal()
+    {
+        boolean diagonalMatch = false;
+
+        for(int i = 1; i < COLUMNS; i++)
+        {
+            String next  = board.getPosition(i, i);
+
+            if(next.isBlank() || next.isEmpty())
+            {
+                break;
+            }
+            else if(next.equals(PLAYER_MARK))
+            {
+                diagonalMatch = true;
+            }
+            else
+            {
+                diagonalMatch = false;
+            }
+        }
+
+        if(!diagonalMatch)
+        {
+            for(int i = 1; i < ROWS; i++)
+            {
+                for(int j = 3; j > 1; j--)
+                {
+                    String next  = board.getPosition(i, j);
+    
+                    if(next.isBlank() || next.isEmpty())
+                    {
+                        diagonalMatch = false;
+                        break;
+                    }
+                    else if(next.equals(PLAYER_MARK))
+                    {
+                        diagonalMatch = true;
+                    }
+                    else
+                    {
+                        diagonalMatch = false;
+                        break;
+                    }
+                }
+
+                if(diagonalMatch)
+                {
+                    break;
+                }
+            }
+        }
+
+        return diagonalMatch;
+    }
+
+    private boolean checkWin()
+    {
+        boolean win = false;
+
+        win = this.checkColumnMatches();
+
+        System.out.println("Step 1: " + win);
+
+        if(!win)
+        {
+            win = this.checkRowMatches();
+        }
+
+        System.out.println("Step 2: " + win);
+
+        if(!win)
+        {
+            win = this.checkDiagonalMatches();
+        }
+
+        System.out.println("Step 3: " + win);
+
+        return win;
+    }
+
+    private boolean checkColumnMatches()
+    {
+        boolean matches = false;
+        
+        for(int i = 1; i < COLUMNS; i++)
+        {
+            String  first   = board.getPosition(i, 1);
+
+            if(first.isBlank() || first.isEmpty())
+            {
+                break;
+            }
+
+            for(int j = 1; j < ROWS; j++)
+            {
+                String contents = board.getPosition(i, j);
+    
+                if(contents.isBlank() || contents.isEmpty())
+                {
+                    matches = false;
+                    break;
+                }
+                else if(first.equals(contents))
+                {
+                    matches = true;
+                }
+                else
+                {
+                    matches = false;
+                    break;
+                }
+            }
+
+            if(matches)
+            {
+                break;
+            }
+        }
+
+        System.out.println("Col match: " + matches);
+        return matches;
+    }
+
+    private boolean checkRowMatches()
+    {
+        boolean matches = false;
+        
+        for(int i = 1; i < ROWS; i++)
+        {
+            String  first = board.getPosition(1, i);
+
+            for(int j = 1; j < COLUMNS; j++)
+            {
+                String contents = board.getPosition(j, i);
+    
+                if(contents.isBlank() || contents.isEmpty())
+                {
+                    matches = false;
+                    break;
+                }
+                else if(first.equals(contents))
+                {
+                    matches = true;
+                }
+                else
+                {
+                    matches = false;
+                    break;
+                }
+            }
+
+            if(matches)
+            {
+                break;
+            }
+        }
+
+        System.out.println("Row match: " + matches);
+        return matches;
+    }
+
+    private boolean checkDiagonalMatches()
+    {
+        boolean diagonalMatch = false;
+
+        for(int i = 1; i < COLUMNS; i++)
+        {
+            String first = board.getPosition(1, 1);
+            String next  = board.getPosition(i, i);
+
+            System.out.println("First is " + first + " blank? " + first.isBlank());
+            System.out.println("Col " + i + " Row " + i + " : " + next + " blank? " + next.isBlank());
+            System.out.println();
+
+            if(next.isBlank() || next.isEmpty())
+            {
+                diagonalMatch = false;
+                break;
+            }
+            if(first.equals(next))
+            {
+                diagonalMatch = true;
+            }
+            else
+            {
+                diagonalMatch = false;
+                break;
+            }
+        }
+
+        if(!diagonalMatch)
+        {
+            for(int i = 1; i < ROWS; i++)
+            {
+                for(int j = 3; j > 1; j--)
+                {
+                    String first = board.getPosition(1, 3);
+                    String next  = board.getPosition(i, j);
+
+                    System.out.println("First is " + first + " blank? " + first.isBlank());
+                    System.out.println("Col " + i + " Row " + j + " : " + next + " blank? " + next.isBlank());
+                    System.out.println();
+
+                    if(first.equals(next))
+                    {
+                        diagonalMatch = true;
+                    }
+                    else
+                    {
+                        diagonalMatch = false;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Diagonal match: " + diagonalMatch);
+        return diagonalMatch;
     }
 
     private void playerChoice()
@@ -120,10 +421,11 @@ public class TicTacToe extends Game
     private void computerChoice()
     {
         boolean found = false;
+        System.out.println("Computer choosing");
 
-        for(int row = 0; row < ROWS; row++)
+        for(int row = 1; row < ROWS; row++)
         {
-            for(int col = 0; col < COLUMNS; col++)
+            for(int col = 1; col < COLUMNS; col++)
             {
                 int[] choice = new int[2];
                 choice[ROW_INDEX] = row;
