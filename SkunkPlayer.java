@@ -19,7 +19,6 @@ public class SkunkPlayer extends Player
 
     private boolean       standing;
     private Score         roundScore;
-    private SkunkControls controls;
 
     /**
      * Create a player for the game of SKUNK and set up a new
@@ -35,7 +34,6 @@ public class SkunkPlayer extends Player
         standing = true;
 
         this.roundScore = new Score(0);
-        this.controls   = new SkunkControls();
     }
 
     /**
@@ -88,7 +86,8 @@ public class SkunkPlayer extends Player
 	 * @param playerInput - the player input object
 	 * @return true if the player would like to remain standing
 	 */
-	public boolean checkPlayerStandChoice(Input playerInput, Board board, ArrayList<Player> players)
+    public boolean checkPlayerStandChoice(Input playerInput, Board board, 
+                                          ArrayList<Player> players, SkunkControls controls)
 	{
 		boolean waiting = true;
 		boolean remainStanding = true;
@@ -114,12 +113,7 @@ public class SkunkPlayer extends Player
 				}
 				else
 				{
-                    boolean control = this.controls.runOtherControls(input, board, players);
-
-                    if(!control)
-                    {
-                        System.out.println("Hmmm... " + input + " doesn't work here. Try again!");
-                    }
+                    controls.runOtherControls(input, board, players);
 				}
 			}
 		}

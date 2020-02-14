@@ -12,10 +12,8 @@ public class SkunkControls extends Controls
         super();
 	}
 
-	public boolean runOtherControls(String input, Board board, ArrayList<Player> players)
+	public void runOtherControls(String input, Board board, ArrayList<Player> players)
 	{
-		boolean foundControl = false;
-
 		if(null == input)
 		{
 			System.out.println("Hmmm... input can't be null");
@@ -24,12 +22,10 @@ public class SkunkControls extends Controls
 		if(input.equalsIgnoreCase(DISPLAY_BOARD))
 		{
 			board.drawBoard();
-			foundControl = true;
 		}
 		else if(input.equalsIgnoreCase(DISPLAY_CONTROLS))
 		{
 			this.listControls();
-			foundControl = true;
 		}
 		else if(input.equalsIgnoreCase(DISPLAY_SCORES))
 		{
@@ -37,20 +33,19 @@ public class SkunkControls extends Controls
 			{
 				System.out.println(player.getName() + ": " + player.getScoreValue());
 			}
-
-			foundControl = true;
 		}
 		else if(input.equalsIgnoreCase(DISPLAY_RULES))
 		{
 			this.listRules(2);
-			foundControl = true;
 		}
 		else if(input.equalsIgnoreCase(QUIT))
 		{
 			System.exit(0);
 		}
-
-		return foundControl;
+		else
+		{
+			System.out.println("Hmmm... " + input + " doesn't work here...");
+		}
 	}
 
 	/**

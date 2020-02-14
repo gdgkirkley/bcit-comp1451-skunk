@@ -29,7 +29,8 @@ public class Skunk extends Game
 	private int				currentRound;
 	private	Input			playerInput;
 	private int[]   		currentRolls;
-    private Board           board; 
+    private Board           board;
+    private SkunkControls   controls;
     private String          playerName;
 
     /**
@@ -76,7 +77,8 @@ public class Skunk extends Game
 		}
 		
         board             = createSkunkBoard();
-		this.die		  = new RandomGenerator(MIN_DIE_VALUE, MAX_DIE_VALUE);
+        this.die		  = new RandomGenerator(MIN_DIE_VALUE, MAX_DIE_VALUE);
+        this.controls     = new SkunkControls();
 		this.currentRound = INITIAL_ROUND_VALUE;
         this.currentRolls = new int[numberOfDice];
         
@@ -135,7 +137,9 @@ public class Skunk extends Game
         
         while(waiting)
         {
-            System.out.print("Play again?");
+            System.out.print("Play again with the same dice and players? (" + 
+                             SkunkControls.YES + " / " + SkunkControls. NO + 
+                             " / " + SkunkControls.DISPLAY_CONTROLS + " for controls): ");
 
             if(playerInput.hasNext())
             {
@@ -162,7 +166,7 @@ public class Skunk extends Game
                 }
                 else
                 {
-                    System.out.println("Hmmm... " + input + " doesn't work here...");
+                    this.controls.runOtherControls(input, this.board, this.getPlayers());
                 }
             }
         }
@@ -506,7 +510,7 @@ public class Skunk extends Game
     {
         SkunkPlayer player = (SkunkPlayer)this.getPlayerByName(this.playerName);
 
-        boolean standing = player.checkPlayerStandChoice(this.playerInput, this.board, this.getPlayers());
+        boolean standing = player.checkPlayerStandChoice(this.playerInput, this.board, this.getPlayers(), this.controls);
         
         player.setStanding(standing);
     }
