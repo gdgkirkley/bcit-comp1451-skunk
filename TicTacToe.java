@@ -4,7 +4,7 @@ public class TicTacToe extends Game
 {
     public static final int INITIAL_SCORE_VALUE = 0;
     public static final int INITIAL_ROUND_VALUE = 0;
-    public static final int MAX_ROUNDS          = 3;
+    public static final int MAX_ROUNDS          = 4;
     public static final int MAX_INPUT_LENGTH    = 2;
     public static final int COLUMNS             = 4;
     public static final int ROWS                = 4;
@@ -14,9 +14,11 @@ public class TicTacToe extends Game
     public static final String PLAYER_MARK      = "X";
     public static final String COMPUTER_MARK    = "O";
 
-    private Board board;
-    private Input playerInput;
-    private int   currentRound;
+    private Board   board;
+    private Input   playerInput;
+    private int     currentRound;
+    private boolean computerWin;
+    private boolean playerWin;
 
     public TicTacToe(Input playerInput)
     {
@@ -48,12 +50,15 @@ public class TicTacToe extends Game
             {
                 this.playRound();
     
-                if(currentRound >= 5 && this.checkWin())
+                this.playerWin = checkWin(PLAYER_MARK);
+                this.computerWin = checkWin(COMPUTER_MARK);
+                System.out.println("Oh a win");
+
+                if(playerWin || computerWin)
                 {
-                    System.out.println("Oh a win");
                     break;
                 }
-
+                
                 this.currentRound += 1;
             }
 
@@ -81,156 +86,40 @@ public class TicTacToe extends Game
 
         System.out.println("==================");
 
-        if(didPlayerWin())
+        if(playerWin)
         {
             System.out.println("|   YOU WIN!!!!  |");
         }
-        else
+        else if(computerWin)
         {
             System.out.println("|   You lost...  |");
+        }
+        else
+        {
+            System.out.println("|   Tie game...  |");
         }
 
         System.out.println("==================");
     }
 
-    private boolean didPlayerWin()
-    {
-        boolean playerWin     = false;
-        boolean columnMatch   = this.checkColumnMatches();
-        boolean rowMatch      = this.checkRowMatches();
-        boolean diagonalMatch = this.checkDiagonalMatches();
-
-        if(columnMatch)
-        {
-            playerWin = this.checkPlayerWinAcross(true);
-            System.out.println("Won from col");
-        }
-        else if(rowMatch)
-        {
-            playerWin = this.checkPlayerWinAcross(false);
-            System.out.println("Won from row");
-        }
-        else if(diagonalMatch)
-        {
-            playerWin = this.checkPlayerWinDiagonal();
-            System.out.println("Won from diagonal");
-        }
-
-        return playerWin;
-    }
-
-    private boolean checkPlayerWinAcross(boolean checkingColumn)
-    {
-        boolean matches = false;
-        
-        for(int i = 1; i < COLUMNS; i++)
-        {
-            for(int j = 1; j < ROWS; j++)
-            {
-                String contents = "";
-
-                if(checkingColumn)
-                {
-                    contents = board.getPosition(i, j);
-                }
-                else
-                {
-                    contents = board.getPosition(j, i);
-                }
-    
-                if(contents.equals(PLAYER_MARK))
-                {
-                    matches = true;
-                }
-                else
-                {
-                    matches = false;
-                }
-            }
-
-            if(matches)
-            {
-                break;
-            }
-        }
-
-        return matches;
-    }
-
-    private boolean checkPlayerWinDiagonal()
-    {
-        boolean diagonalMatch = false;
-
-        for(int i = 1; i < COLUMNS; i++)
-        {
-            String next  = board.getPosition(i, i);
-
-            if(next.isBlank() || next.isEmpty())
-            {
-                break;
-            }
-            else if(next.equals(PLAYER_MARK))
-            {
-                diagonalMatch = true;
-            }
-            else
-            {
-                diagonalMatch = false;
-            }
-        }
-
-        if(!diagonalMatch)
-        {
-            for(int i = 1; i < ROWS; i++)
-            {
-                for(int j = 3; j > 1; j--)
-                {
-                    String next  = board.getPosition(i, j);
-    
-                    if(next.isBlank() || next.isEmpty())
-                    {
-                        diagonalMatch = false;
-                        break;
-                    }
-                    else if(next.equals(PLAYER_MARK))
-                    {
-                        diagonalMatch = true;
-                    }
-                    else
-                    {
-                        diagonalMatch = false;
-                        break;
-                    }
-                }
-
-                if(diagonalMatch)
-                {
-                    break;
-                }
-            }
-        }
-
-        return diagonalMatch;
-    }
-
-    private boolean checkWin()
+    private boolean checkWin(String markToCheck)
     {
         boolean win = false;
 
-        win = this.checkColumnMatches();
+        win = this.checkColumnMatches(markToCheck);
 
         System.out.println("Step 1: " + win);
 
         if(!win)
         {
-            win = this.checkRowMatches();
+            win = this.checkRowMatches(markToCheck);
         }
 
         System.out.println("Step 2: " + win);
 
         if(!win)
         {
-            win = this.checkDiagonalMatches();
+            win = this.checkDiagonalMatches(markToCheck);
         }
 
         System.out.println("Step 3: " + win);
@@ -238,19 +127,12 @@ public class TicTacToe extends Game
         return win;
     }
 
-    private boolean checkColumnMatches()
+    private boolean checkColumnMatches(String markToCheck)
     {
         boolean matches = false;
         
         for(int i = 1; i < COLUMNS; i++)
         {
-            String  first   = board.getPosition(i, 1);
-
-            if(first.isBlank() || first.isEmpty())
-            {
-                break;
-            }
-
             for(int j = 1; j < ROWS; j++)
             {
                 String contents = board.getPosition(i, j);
@@ -260,7 +142,7 @@ public class TicTacToe extends Game
                     matches = false;
                     break;
                 }
-                else if(first.equals(contents))
+                else if(contents.equals(markToCheck))
                 {
                     matches = true;
                 }
@@ -281,14 +163,12 @@ public class TicTacToe extends Game
         return matches;
     }
 
-    private boolean checkRowMatches()
+    private boolean checkRowMatches(String markToCheck)
     {
         boolean matches = false;
         
         for(int i = 1; i < ROWS; i++)
         {
-            String  first = board.getPosition(1, i);
-
             for(int j = 1; j < COLUMNS; j++)
             {
                 String contents = board.getPosition(j, i);
@@ -298,7 +178,7 @@ public class TicTacToe extends Game
                     matches = false;
                     break;
                 }
-                else if(first.equals(contents))
+                else if(contents.equals(markToCheck))
                 {
                     matches = true;
                 }
@@ -319,25 +199,20 @@ public class TicTacToe extends Game
         return matches;
     }
 
-    private boolean checkDiagonalMatches()
+    private boolean checkDiagonalMatches(String markToCheck)
     {
         boolean diagonalMatch = false;
 
         for(int i = 1; i < COLUMNS; i++)
         {
-            String first = board.getPosition(1, 1);
             String next  = board.getPosition(i, i);
-
-            System.out.println("First is " + first + " blank? " + first.isBlank());
-            System.out.println("Col " + i + " Row " + i + " : " + next + " blank? " + next.isBlank());
-            System.out.println();
 
             if(next.isBlank() || next.isEmpty())
             {
                 diagonalMatch = false;
                 break;
             }
-            if(first.equals(next))
+            if(next.equals(markToCheck))
             {
                 diagonalMatch = true;
             }
@@ -346,30 +221,41 @@ public class TicTacToe extends Game
                 diagonalMatch = false;
                 break;
             }
+
+            if(!diagonalMatch)
+            {
+                break;
+            }
         }
 
         if(!diagonalMatch)
         {
-            for(int i = 1; i < ROWS; i++)
+            int j = 3;
+
+            for(int i = 1; i < COLUMNS; i++)
             {
-                for(int j = 3; j > 1; j--)
+                String next  = board.getPosition(i, j);
+
+                if(next.isBlank() || next.isEmpty())
                 {
-                    String first = board.getPosition(1, 3);
-                    String next  = board.getPosition(i, j);
-
-                    System.out.println("First is " + first + " blank? " + first.isBlank());
-                    System.out.println("Col " + i + " Row " + j + " : " + next + " blank? " + next.isBlank());
-                    System.out.println();
-
-                    if(first.equals(next))
-                    {
-                        diagonalMatch = true;
-                    }
-                    else
-                    {
-                        diagonalMatch = false;
-                    }
+                    diagonalMatch = false;
+                    break;
                 }
+                if(next.equals(markToCheck))
+                {
+                    diagonalMatch = true;
+                }
+                else
+                {
+                    diagonalMatch = false;
+                }
+
+                if(!diagonalMatch)
+                {
+                    break;
+                }
+
+                j--;
             }
         }
 
